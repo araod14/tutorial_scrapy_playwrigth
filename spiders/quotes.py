@@ -12,15 +12,18 @@ class QuotesSpider(scrapy.Spider):
     }
 
     def start_requests(self):
-        url = "https://quotes.toscrape.com/js/"
+        url="http://quotes.toscrape.com/scroll"
         yield scrapy.Request(
-            url, 
-            meta = dict(
-                playwright = True,
-                playwright_include_page = True,
-                playwright_page_methods =[PageMethod('wait_for_selector', '//div[@class="quote"]')],
-                errback=self.errback
-            )
+            meta=dict(
+                playwright=True,
+                playwright_include_page=True,
+                errback=self.errback,
+                playwright_page_methods=[
+                    PageMethod("wait_for_selector", "div.quote"),
+                    PageMethod("evaluate", "window.scrollBy(0, document.body.scrollHeight)"),
+                    PageMethod("wait_for_selector", "div.quote:nth-child(11)"),  # 10 per page
+                ],
+            ),
         )
 
     async def parse(self, response):
@@ -33,21 +36,6 @@ class QuotesSpider(scrapy.Spider):
             'author': quote.xpath('./span/small[@class="author"]/text()').get(),
             'tags': quote.xpath('./div[@class="tags"]/a/text()').getall()
             }
-
-        next_page = response.xpath('//ul[@class="pager"]/li[@class="next"]/a/@href').get()
-        if next_page is not None:
-            next_page_url = 'http://quotes.toscrape.com' + next_page
-            yield scrapy.Request(
-                next_page_url, 
-                meta=dict(
-                    playwright = True,
-                    playwright_include_page = True, 
-                    playwright_page_methods =[
-                        PageMethod('wait_for_selector', 'div.quote'),
-                    ],
-                    errback=self.errback,
-                )
-            )
             
     async def errback(self, failure):
         page = failure.request.meta["playwright_page"]
