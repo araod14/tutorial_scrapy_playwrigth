@@ -18,7 +18,7 @@ class QuotesSpider(scrapy.Spider):
             meta = dict(
                 playwright = True,
                 playwright_include_page = True,
-                playwright_page_methods =[PageMethod('wait_for_selector', 'div.quote')],
+                playwright_page_methods =[PageMethod('wait_for_selector', '//div[@class="quote"]')],
                 errback=self.errback
             )
         )
