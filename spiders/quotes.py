@@ -12,16 +12,21 @@ class QuotesSpider(scrapy.Spider):
     }
 
     def start_requests(self):
-        url="http://quotes.toscrape.com/scroll"
         yield scrapy.Request(
+            url="http://quotes.toscrape.com/scroll",
             meta=dict(
                 playwright=True,
                 playwright_include_page=True,
                 errback=self.errback,
                 playwright_page_methods=[
-                    PageMethod("wait_for_selector", "div.quote"),
-                    PageMethod("evaluate", "window.scrollBy(0, document.body.scrollHeight)"),
-                    PageMethod("wait_for_selector", "div.quote:nth-child(11)"),  # 10 per page
+                    PageMethod('evaluate', 'window.scrollBy(0, document.body.scrollHeight)'),
+                    PageMethod('wait_for_selector', f'.quote:nth-child(11)'),
+                    PageMethod('evaluate', 'window.scrollBy(0, document.body.scrollHeight)'),
+                    PageMethod('wait_for_selector', f'.quote:nth-child(21)'),
+                    PageMethod('evaluate', 'window.scrollBy(0, document.body.scrollHeight)'),
+                    PageMethod('wait_for_selector', f'.quote:nth-child(31)'),
+                    PageMethod('evaluate', 'window.scrollBy(0, document.body.scrollHeight)'),
+                    PageMethod('wait_for_selector', f'.quote:nth-child(41)'),
                 ],
             ),
         )
