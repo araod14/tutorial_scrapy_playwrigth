@@ -27,6 +27,10 @@ class QuotesSpider(scrapy.Spider):
                     PageMethod('wait_for_selector', f'.quote:nth-child(31)'),
                     PageMethod('evaluate', 'window.scrollBy(0, document.body.scrollHeight)'),
                     PageMethod('wait_for_selector', f'.quote:nth-child(41)'),
+                    PageMethod('evaluate', 'window.scrollBy(0, document.body.scrollHeight)'),
+                    PageMethod('wait_for_selector', f'.quote:nth-child(51)'),
+                    PageMethod('evaluate', 'window.scrollBy(0, document.body.scrollHeight)'),
+                    PageMethod('wait_for_selector', f'.quote:nth-child(61)'),
                 ],
             ),
         )
